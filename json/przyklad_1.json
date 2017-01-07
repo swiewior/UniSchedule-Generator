@@ -1,0 +1,91 @@
+{
+    "czyje preferencje": "prowadzacy_lub_numer_gr",
+    "preferencje planu":
+    {
+      "poniedzialek":
+      {
+        "godzina1": "8:00 - 9:30",
+        "sala1": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina2": "9:45 - 11:15",
+        "sala2": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina3": "11:30 - 13:00",
+        "sala3": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina4": "13:15 - 14:45",
+        "sala4": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina5": "15:00 - 16:30",
+        "sala5": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina6": "16:45 - 18:15",
+        "sala6": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina7": "18:30 - 20:00",
+        "sala7": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL"
+      },
+      "wtorek":
+      {
+        "godzina1": "8:00 - 9:30",
+        "sala1": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina2": "9:45 - 11:15",
+        "sala2": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina3": "11:30 - 13:00",
+        "sala3": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina4": "13:15 - 14:45",
+        "sala4": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina5": "15:00 - 16:30",
+        "sala5": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina6": "16:45 - 18:15",
+        "sala6": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina7": "18:30 - 20:00",
+        "sala7": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL"
+      },
+     "sroda":
+      {
+        "godzina1": "8:00 - 9:30",
+        "sala1": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina2": "9:45 - 11:15",
+        "sala2": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina3": "11:30 - 13:00",
+        "sala3": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina4": "13:15 - 14:45",
+        "sala4": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina5": "15:00 - 16:30",
+        "sala5": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina6": "16:45 - 18:15",
+        "sala6": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina7": "18:30 - 20:00",
+        "sala7": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL"
+      },
+      "czwartek":
+      {
+        "godzina1": "8:00 - 9:30",
+        "sala1": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina2": "9:45 - 11:15",
+        "sala2": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina3": "11:30 - 13:00",
+        "sala3": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina4": "13:15 - 14:45",
+        "sala4": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina5": "15:00 - 16:30",
+        "sala5": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina6": "16:45 - 18:15",
+        "sala6": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina7": "18:30 - 20:00",
+        "sala7": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL"
+      },
+      "piatek":
+      {
+        "godzina1": "8:00 - 9:30",
+        "sala1": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina2": "9:45 - 11:15",
+        "sala2": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina3": "11:30 - 13:00",
+        "sala3": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina4": "13:15 - 14:45",
+        "sala4": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina5": "15:00 - 16:30",
+        "sala5": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina6": "16:45 - 18:15",
+        "sala6": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL",
+        "godzina7": "18:30 - 20:00",
+        "sala7": "jakas_sala_z_BD_jesli_brak_zajec_o_tej_godzinie_to_NULL"
+      }
+    }
+}
