@@ -6,3 +6,5 @@ public class Main {
 			Generator generator = new Generator();
         }
     }
+
+    // https://google.github.io/styleguide/javaguide.html

@@ -2,6 +2,8 @@ public class ProfessorObject {
 	private int id;
 	private String name;
 	private String surname;
+	private String preferences[][];
+
 
 	public ProfessorObject(int id, String name, String surname) {
 		this.id = id;
@@ -19,5 +21,13 @@ public class ProfessorObject {
 
 	public String getSurname() {
 		return surname;
+	}
+
+	public void setPreferences(String[][] preferences) {
+		this.preferences = preferences;
+	}
+
+	public String[][] getPreferences() {
+		return preferences;
 	}
 }

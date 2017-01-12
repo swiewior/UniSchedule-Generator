@@ -16,6 +16,8 @@ public class CSVParser {
 		this.list = list;
 		pw = new PrintWriter(new File("plan.txt"));
 		sb = new StringBuilder();
+
+		// Header (optional)
 		//sb.append("course,room,professor,day,start_hour,90,group_name");
 		//sb.append(System.lineSeparator());
 
@@ -26,6 +28,10 @@ public class CSVParser {
 	void readSchedule(){
 
 		for (Schedule scheduleItem : list) {
+			if (sb.length() != 0) {
+				sb.append(",");
+				sb.append(System.lineSeparator());
+			}
 			sb.append(scheduleItem.getClassObject().courseToString());
 			sb.append(',');
 			sb.append(scheduleItem.getRoom());
@@ -39,7 +45,6 @@ public class CSVParser {
 			sb.append("90");
 			sb.append(',');
 			sb.append(scheduleItem.getClassObject().groupToString());
-			sb.append(System.lineSeparator());
 		}
 	}
 

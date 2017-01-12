@@ -1,6 +1,4 @@
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +12,7 @@ public class Generator {
 			"Czwartek",
 			"Piątek"
 	};
+
 	public static final Hour[] HOURS = {
 			new Hour("8:00", "9:30"),
 			new Hour("9:45", "11:15"),
@@ -31,7 +30,7 @@ public class Generator {
 	ArrayList<ProfessorObject> professors;
 	ArrayList<RoomObject> rooms;
 	ArrayList<ClassObject> classes;
-	ArrayList<Schedule> schedule;
+	ArrayList<Schedule> scheduleArrayList;
 
 	public Generator() {
 		courses = new ArrayList<>();
@@ -41,14 +40,12 @@ public class Generator {
 
 		classes = new ArrayList<>();
 
-
-
 		readResources();
 		readPreferences();
 		algorithm();
 
 		try {
-			csvParser = new CSVParser(schedule);
+			csvParser = new CSVParser(scheduleArrayList);
 		} catch (Exception e) {
 			LOG.log(Level.SEVERE, "", e);
 		}
@@ -69,8 +66,27 @@ public class Generator {
 		LOG.log(Level.INFO, "Zakończono wczytywanie zasobów");
 	}
 
+	// TODO
 	void readPreferences() {
-		// TODO
+		new JSONReader(groups, professors);
+
+		ListIterator<ClassObject> iterator = classes.listIterator();
+
+		while(iterator.hasNext()) {
+			ProfessorObject professorItem = iterator.next();
+			String preferences[][] = professorItem.getPreferences();
+
+			// Days Loop
+			for (int i = 0; i < 5; i++) {
+				// Hour Loop
+				for (int j = 0; j < 7; j++)
+				if (preferences[i][j] != null)
+					if (scheduleArray[preferences[i][j]][j][i])
+
+
+				}
+			}
+		}
 	}
 
 	void algorithm() {
@@ -80,10 +96,10 @@ public class Generator {
 		int n = rooms.size();	// number of rooms
 
 		// Schedule
-		int plan_sal[][][] = new int[n][7][5];
-		for(int i = 0; i < n; i++)
+		int scheduleArray[][][] = new int[n][7][5];
+		/*for(int i = 0; i < n; i++)
 			for(int j = 0; j < 7; j++)
-				Arrays.fill(plan_sal[i][j], -1);
+				Arrays.fill(scheduleArray[i][j], -1);*/
 
 		ListIterator<ClassObject> iterator = classes.listIterator();
 		ClassObject controlClass = null;
@@ -93,7 +109,7 @@ public class Generator {
 			ClassObject classItem = iterator.next();
 
 			if (!iterator.hasPrevious())
-				plan_sal[0][0][0] = classItem.getId();
+				scheduleArray[0][0][0] = classItem.getId();
 
 			dayLoop:
 			for (int k = 0; k < 5; k++) {
@@ -102,25 +118,30 @@ public class Generator {
 					roomLoop:
 					for (int i = 0; i < n; i++) {
 
-						if (plan_sal[i][j][k] != -1)
+						if (scheduleArray[i][j][k] != 0)
 							continue;
 
+						// for efery room
 						for (int it = 0; it < classes.size() &&
-								(plan_sal[it][j][k] != -1); it++) {
-							int controlClassId = plan_sal[it][j][k];
+								(scheduleArray[it][j][k] != 0); it++) {
+							int controlClassId = scheduleArray[it][j][k];
 
-							for (ClassObject co : classes)
-								if(co.getId() == controlClassId) {
-									controlClass = co;
+							// find control class
+							for (ClassObject classObject : classes)
+								if(classObject.getId() == controlClassId) {
+									controlClass = classObject;
 									break;
 								}
 
+								// check if professor or group of control class is already assigned
+							assert controlClass != null;
 							if ((controlClass.getProfessorId() == classItem.getProfessorId())
 									|| (controlClass.getGroupId() == classItem.getGroupId()))
 								continue roomLoop;
 						}
 
-						plan_sal[i][j][k] = classItem.getId();
+						// assign class to scheduleArrayList and goto next class
+						scheduleArray[i][j][k] = classItem.getId();
 						continue classLoop;
 
 					}
@@ -129,22 +150,27 @@ public class Generator {
 			//LOG.log(Level.WARNING, "Nie dodano zajęcia do planu", classItem);
 		}
 		LOG.log(Level.INFO, "Zakończono umieszczanie zajęć w planie");
-		generate(plan_sal);
+		generate(scheduleArray);
 	}
 
-	void generate(int plan_sal[][][]) {
+	/**
+	 * Generates scheduleArrayList
+	 * Resolves keys in scheduleArray, finds appropiate objects and
+	 * @param scheduleArray is array of 3D dependency created in alghoritm.
+	 */
+	void generate(int scheduleArray[][][]) {
 		int idClass, roomNumber, hourNumber, dayNumber;
 		ListIterator<ClassObject> iterator;
 		ClassObject classItem = null;
-		schedule = new ArrayList<>();
+		scheduleArrayList = new ArrayList<>();
 
 		dayLoop:
 		for (int k = 0; k < 5; k++) {
 			hourLoop:
 			for (int j = 0; j < 7; j++) {
 				roomLoop:
-				for (int i = 0; (i < rooms.size()) && (plan_sal[i][j][k] != -1); i++) {
-					idClass = plan_sal[i][j][k];
+				for (int i = 0; (i < rooms.size()) && (scheduleArray[i][j][k] != 0); i++) {
+					idClass = scheduleArray[i][j][k];
 					roomNumber = i;
 					hourNumber = j;
 					dayNumber = k;
@@ -162,15 +188,13 @@ public class Generator {
 					}
 
 					try {
-						schedule.add( new Schedule (classItem, room, hour, day));
-						LOG.log(Level.INFO, "Added class to schedule");
+						scheduleArrayList.add( new Schedule (classItem, room, hour, day));
+						LOG.log(Level.INFO, "Added class to scheduleArrayList");
 					} catch (Exception e) {
-						LOG.log(Level.WARNING, "Couldn't add class to schedule", e);
+						LOG.log(Level.WARNING, "Couldn't add class to scheduleArrayList", e);
 					}
 				}
 			}
 		}
-
 	}
-
 }
