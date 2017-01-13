@@ -1,19 +1,22 @@
+package io;
+
+import resourcesObjects.*;
+
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MySQLParser {
+public class MySQLReader {
 	Connection connection;
 	private static final Logger LOG = Logger.getLogger( Logger.GLOBAL_LOGGER_NAME );
 
-	public MySQLParser(Connection connection) {
+	public MySQLReader(Connection connection) {
 		this.connection = connection;
 		init();
 	}
 
-	public MySQLParser() {
+	public MySQLReader() {
 		init();
 	}
 

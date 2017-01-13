@@ -1,14 +1,17 @@
+package io;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import schedule.ScheduleObject;
 
-public class CSVParser {
+public class CSVWriter {
 	PrintWriter pw;
 	StringBuilder sb;
-	ArrayList<Schedule> list;
+	ArrayList<ScheduleObject> list;
 
-	public CSVParser(ArrayList<Schedule> list) throws FileNotFoundException,
+	public CSVWriter(ArrayList<ScheduleObject> list) throws FileNotFoundException,
 			NullPointerException {
 		if (list == null)
 			throw new NullPointerException("list is empty");
@@ -27,7 +30,7 @@ public class CSVParser {
 
 	void readSchedule(){
 
-		for (Schedule scheduleItem : list) {
+		for (ScheduleObject scheduleItem : list) {
 			if (sb.length() != 0) {
 				sb.append(",");
 				sb.append(System.lineSeparator());

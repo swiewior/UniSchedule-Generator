@@ -1,3 +1,5 @@
+package resourcesObjects;
+
 public class RoomObject {
 	private int id;
 	private String name;

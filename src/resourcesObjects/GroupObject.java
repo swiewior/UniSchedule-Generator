@@ -1,3 +1,5 @@
+package resourcesObjects;
+
 public class GroupObject {
 	private Integer id;
 	private String name;

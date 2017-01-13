@@ -1,9 +1,18 @@
+package io;
+
 import org.json.*;
+import resourcesObjects.GroupObject;
+import resourcesObjects.ProfessorObject;
+import resourcesObjects.RoomObject;
+
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class JSONReader {
+	private static final Logger LOG = Logger.getLogger( Logger.GLOBAL_LOGGER_NAME );
 
 	GroupObject groupItem;
 	ProfessorObject professorItem;
@@ -36,9 +45,10 @@ public class JSONReader {
 		getFileNames();
 
 		fileNamesIterator = fileNames.listIterator();
-		while (fileNamesIterator.hasNext()) {
-			readJSON(fileNamesIterator.next());
-		}
+		while (fileNamesIterator.hasNext())
+			try {
+				readJSON(fileNamesIterator.next());
+			} catch (JSONException e) { LOG.log(Level.WARNING, "", e); }
 	}
 
 	private void getFileNames() {
@@ -57,8 +67,9 @@ public class JSONReader {
 		}
 	}
 
-	private void readJSON(String fileName) {
+	private void readJSON(String fileName) throws JSONException {
 		RoomObject roomItem;
+
 		JSONObject file = new JSONObject(fileName);
 		String name = file.getString("czyje preferencje");
 		int preferences[][] = new int[7][5];
@@ -71,7 +82,7 @@ public class JSONReader {
 			for (int i = 0; i < 7; i++) {
 				preferences[i][j] = -1; // fill preferences with -1 by default
 
-				String room = day.getString("sala" + i+1);
+				String room = day.getString("sala" + i + 1);
 				if (!Objects.equals(room, "null")) {
 
 					// get ArrayList index of room and assign to preferences

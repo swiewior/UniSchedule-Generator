@@ -1,3 +1,5 @@
+package resourcesObjects;
+
 public class ProfessorObject {
 	private int id;
 	private String name;

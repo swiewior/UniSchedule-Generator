@@ -1,7 +1,13 @@
+package schedule;
+
+import defaultPackage.Hour;
+
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import io.*;
+import resourcesObjects.*;
 
 public class Generator {
 	private static final Logger LOG = Logger.getLogger( Logger.GLOBAL_LOGGER_NAME );
@@ -23,17 +29,17 @@ public class Generator {
 			new Hour("18:30", "20:00"),
 	};
 
-	MySQLParser mySQLParser;
-	CSVParser csvParser;
+	MySQLReader mySQLParser;
+	CSVWriter csvParser;
 	ArrayList<CourseObject> courses;
 	ArrayList<GroupObject> groups;
 	ArrayList<ProfessorObject> professors;
 	ArrayList<RoomObject> rooms;
 	ArrayList<ClassObject> classes;
-	ArrayList<Schedule> scheduleArrayList;
+	ArrayList<ScheduleObject> scheduleArrayList;
 
 	/**
-	 * Schedule (Array of class ID from Database)
+	 * ScheduleObjectObject (Array of class ID from Database)
 	 * 1 - room number
 	 * 2 - hour
 	 * 3 - day
@@ -63,7 +69,7 @@ public class Generator {
 		algorithm();
 
 		try {
-			csvParser = new CSVParser(scheduleArrayList);
+			csvParser = new CSVWriter(scheduleArrayList);
 		} catch (Exception e) {
 			LOG.log(Level.SEVERE, "", e);
 		}
@@ -72,7 +78,7 @@ public class Generator {
 	}
 
 	void readResources() {
-		mySQLParser = new MySQLParser();
+		mySQLParser = new MySQLReader();
 		mySQLParser.readCourses(courses);
 		mySQLParser.readGropus(groups);
 		mySQLParser.readProfessors(professors);
@@ -160,7 +166,7 @@ public class Generator {
 		// k - day
 		int n = rooms.size();	// number of rooms
 
-		// Schedule
+		// ScheduleObjectObject
 		// 7 - hours per day
 		// 5 - days per week
 		int scheduleArray[][][] = new int[n][7][5];
@@ -203,7 +209,7 @@ public class Generator {
 	/**
 	 * Generates scheduleArrayList
 	 * Resolves keys in scheduleArray, finds their objects and puts in
-	 * to Schedule Array List
+	 * to ScheduleObjectObject Array List
 	 * @param scheduleArray is array of 3D dependency created in alghoritm.
 	 */
 	void generate(int scheduleArray[][][]) {
@@ -236,7 +242,7 @@ public class Generator {
 					}
 
 					try {
-						scheduleArrayList.add( new Schedule (classItem, room, hour, day));
+						scheduleArrayList.add( new ScheduleObject (classItem, room, hour, day));
 						LOG.log(Level.INFO, "Added class to scheduleArrayList");
 					} catch (Exception e) {
 						LOG.log(Level.WARNING, "Couldn't add class to scheduleArrayList", e);

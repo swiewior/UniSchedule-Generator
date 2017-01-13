@@ -1,3 +1,5 @@
+package defaultPackage;
+
 public class Hour {
 	String start;
 	String end;

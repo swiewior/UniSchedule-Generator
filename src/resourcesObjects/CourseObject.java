@@ -1,3 +1,5 @@
+package resourcesObjects;
+
 public class CourseObject {
 	private int id;
 	private String name;
