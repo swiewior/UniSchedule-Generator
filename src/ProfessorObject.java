@@ -2,7 +2,7 @@ public class ProfessorObject {
 	private int id;
 	private String name;
 	private String surname;
-	private String preferences[][];
+	private int preferences[][];
 
 
 	public ProfessorObject(int id, String name, String surname) {
@@ -23,11 +23,15 @@ public class ProfessorObject {
 		return surname;
 	}
 
-	public void setPreferences(String[][] preferences) {
+	public void setPreferences(int[][] preferences) {
 		this.preferences = preferences;
 	}
 
-	public String[][] getPreferences() {
+	public int[][] getPreferences() {
 		return preferences;
+	}
+
+	public String getFullName() {
+		return name + " " + surname;
 	}
 }

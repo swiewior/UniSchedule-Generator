@@ -1,23 +1,24 @@
 import org.json.*;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Objects;
 
 public class JSONReader {
 
+	GroupObject groupItem;
+	ProfessorObject professorItem;
+
 	ArrayList<GroupObject> groups;
 	ArrayList<ProfessorObject> professors;
+	ArrayList<RoomObject> rooms;
+	ArrayList<String> fileNames;
+
 	ListIterator<GroupObject> groupsIterator;
 	ListIterator<ProfessorObject> professorsIterator;
+	ListIterator<RoomObject> roomsIterator;
+	ListIterator<String> fileNamesIterator;
 
-	String preferences[][];
-	String name;
-
-	static final String[] JSONDAYS = {
+	static final String[] JSON_DAYS = {
 			"poniedzialek",
 			"wtorek",
 			"sroda",
@@ -26,36 +27,73 @@ public class JSONReader {
 	};
 
 	public JSONReader(ArrayList<GroupObject> groups,
-										ArrayList<ProfessorObject> professors) {
+										ArrayList<ProfessorObject> professors,
+										ArrayList<RoomObject> rooms) {
 		this.groups = groups;
 		this.professors = professors;
+		this.rooms = rooms;
 
-		JSONObject file = new JSONObject("preferencje.json");
-		ReadJSON(file);
-		AssignPreferences();
-	}
+		getFileNames();
 
-	private void ReadJSON(JSONObject file) {
-		name = file.getString("czyje preferencje");
-
-		JSONObject schedulePreferences = file.getJSONObject("preferencje planu");
-		// Day Loop
-		for (int i = 0; i < 5; i++)
-		{
-			JSONObject day = schedulePreferences.getJSONObject(JSONDAYS[i]);
-
-			// Hour Loop
-			for (int j = 0; j < 7; j++) {
-				if (!Objects.equals(day.getString("sala" + i + 1), "null"))
-					preferences[i][j] = day.getString("sala" + i + 1);
-			}
+		fileNamesIterator = fileNames.listIterator();
+		while (fileNamesIterator.hasNext()) {
+			readJSON(fileNamesIterator.next());
 		}
 	}
 
-	private void AssignPreferences() {
+	private void getFileNames() {
+		fileNames = new ArrayList<>();
+
+		groupsIterator = groups.listIterator();
+		while (groupsIterator.hasNext()) {
+			Integer groupId = groupsIterator.next().getId();
+			fileNames.add("grupa" + groupId.toString());
+		}
+
+		professorsIterator = professors.listIterator();
+		while (professorsIterator.hasNext()) {
+			Integer professorId = professorsIterator.next().getId();
+			fileNames.add("prowadzacy" + professorId.toString());
+		}
+	}
+
+	private void readJSON(String fileName) {
+		RoomObject roomItem;
+		JSONObject file = new JSONObject(fileName);
+		String name = file.getString("czyje preferencje");
+		int preferences[][] = new int[7][5];
+
+		// Day Loop
+		for (int j = 0; j < 5; j++) {
+			JSONObject day = file.getJSONObject(JSON_DAYS[j]);
+
+			// Hour Loop
+			for (int i = 0; i < 7; i++) {
+				preferences[i][j] = -1; // fill preferences with -1 by default
+
+				String room = day.getString("sala" + i+1);
+				if (!Objects.equals(room, "null")) {
+
+					// get ArrayList index of room and assign to preferences
+					roomsIterator = rooms.listIterator();
+					while (roomsIterator.hasNext()) {
+						roomItem = roomsIterator.next();
+						if (Objects.equals(roomItem.getName(), room)) {
+							preferences[i][j] = rooms.indexOf(roomItem);
+							break;
+						}
+					}
+				}
+			}
+		}
+		assignPreferences(name, preferences);
+	}
+
+	private void assignPreferences(String name, int preferences[][]) {
 		GroupObject groupItem;
 		ProfessorObject professorItem;
 
+		// Find group and assign preferences
 		groupsIterator = groups.listIterator();
 		while (groupsIterator.hasNext()) {
 			groupItem = groupsIterator.next();
@@ -65,34 +103,14 @@ public class JSONReader {
 			}
 		}
 
+		// Find professor and assign preferences
 		professorsIterator = professors.listIterator();
 		while (professorsIterator.hasNext()) {
 			professorItem = professorsIterator.next();
-			if (Objects.equals(professorItem.getName(), name)) {
+			if (Objects.equals(professorItem.getFullName(), name)) {
 				professorItem.setPreferences(preferences);
 				break;
 			}
-		}
-	}
-
-	void test() {
-		try {
-			JSONParser parser = new JSONParser();
-			Object obj = parser.parse(new FileReader("preferencje.json"));   //test.json to plik do odczytu
-			JSONObject timetable = (JSONObject) obj;      //timetable to glony obiekt
-
-			JSONObject monday = timetable.getJSONObject("poniedzialek");    //Obiekt poniedzialkowy
-
-
-			String czyje_preferencje = (String) timetable.get("czyje preferencje");
-			String godzina1Monday = (String) monday.get("godzina1");
-			String sala1Monday = (String) monday.get("sala1");
-
-			System.out.println("Sala1: " + sala1Monday + "\n" + "Godzina1 : " +
-					godzina1Monday + "\nCzyje preferencje: " + czyje_preferencje);
-
-		} catch (IOException | ParseException e) {
-			e.printStackTrace();
 		}
 	}
 

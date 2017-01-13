@@ -32,6 +32,19 @@ public class Generator {
 	ArrayList<ClassObject> classes;
 	ArrayList<Schedule> scheduleArrayList;
 
+	/**
+	 * Schedule (Array of class ID from Database)
+	 * 1 - room number
+	 * 2 - hour
+	 * 3 - day
+	 */
+	int scheduleArray[][][];
+
+	/**
+	 * Number of rooms
+	 */
+	int n;
+
 	public Generator() {
 		courses = new ArrayList<>();
 		groups = new ArrayList<>();
@@ -39,6 +52,11 @@ public class Generator {
 		rooms = new ArrayList<>();
 
 		classes = new ArrayList<>();
+
+		n = rooms.size();
+		// 7 - hours per day
+		// 5 - days per week
+		scheduleArray = new int[n][7][5];
 
 		readResources();
 		readPreferences();
@@ -66,40 +84,106 @@ public class Generator {
 		LOG.log(Level.INFO, "Zakończono wczytywanie zasobów");
 	}
 
-	// TODO
 	void readPreferences() {
-		new JSONReader(groups, professors);
+		new JSONReader(groups, professors, rooms);
 
 		ListIterator<ClassObject> iterator = classes.listIterator();
+		ClassObject controlClass = null;
+		int roomIndex;
 
+		classLoop:
 		while(iterator.hasNext()) {
-			ProfessorObject professorItem = iterator.next();
-			String preferences[][] = professorItem.getPreferences();
+			ClassObject classItem = iterator.next();
 
-			// Days Loop
-			for (int i = 0; i < 5; i++) {
-				// Hour Loop
-				for (int j = 0; j < 7; j++)
-				if (preferences[i][j] != null)
-					if (scheduleArray[preferences[i][j]][j][i])
+			int[][] professorPreferences = classItem.getProfessor().getPreferences();
 
+			for(int j = 0; j < 5; j++)
+				for (int i = 0; i < 7; i++)
+					if ((roomIndex = professorPreferences[i][j]) != -1) {
+						if (scheduleArray[roomIndex][i][j] != 0)
+							continue;
 
+						// RESOLVE CONFLICTS
+						// for efery room at the same time:
+						for (int it = 0; it < classes.size() &&
+								(scheduleArray[it][i][j] != 0); it++) {
+							// get control class id form schedule
+							int controlClassId = scheduleArray[it][i][j];
+
+							// find control class
+							for (ClassObject classObject : classes)
+								if(classObject.getId() == controlClassId) {
+									controlClass = classObject;
+									break;
+								}
+
+							// check if professor or group of control class is already assigned
+							assert controlClass != null;
+							if ((controlClass.getProfessorId() == classItem.getProfessorId())
+									|| (controlClass.getGroupId() == classItem.getGroupId()))
+								continue classLoop;
+						}
+
+						// assign class to scheduleArrayList and go to next class
+						scheduleArray[roomIndex][i][j] = classItem.getId();
+						continue classLoop;
+					}
 				}
-			}
-		}
-	}
 
+		iterator = classes.listIterator();
+		classLoop:
+		while(iterator.hasNext()) {
+			ClassObject classItem = iterator.next();
+
+			int[][] groupPreferences = classItem.getGroup().getPreferences();
+
+			for(int j = 0; j < 5; j++)
+				for (int i = 0; i < 7; i++)
+					if ((roomIndex = groupPreferences[i][j]) != -1) {
+						if (scheduleArray[roomIndex][i][j] != 0)
+							continue;
+
+						// RESOLVE CONFLICTS
+						// for efery room at the same time:
+						for (int it = 0; it < classes.size() &&
+								(scheduleArray[it][i][j] != 0); it++) {
+							// get control class id form schedule
+							int controlClassId = scheduleArray[it][i][j];
+
+							// find control class
+							for (ClassObject classObject : classes)
+								if(classObject.getId() == controlClassId) {
+									controlClass = classObject;
+									break;
+								}
+
+							// check if professor or group of control class is already assigned
+							assert controlClass != null;
+							if ((controlClass.getProfessorId() == classItem.getProfessorId())
+									|| (controlClass.getGroupId() == classItem.getGroupId()))
+								continue classLoop;
+						}
+
+						// assign class to scheduleArrayList and go to next class
+						scheduleArray[roomIndex][i][j] = classItem.getId();
+						continue classLoop;
+					}
+		}
+			}
+
+	/**
+	 * Assigns classes to the 3D resources relay (room, hour and day)
+	 */
 	void algorithm() {
-		//int i = 0;	// room number
-		//int j = 0;	// hour
-		//int k = 0;	// day
+		// i - room number
+		// j - hour
+		// k - day
 		int n = rooms.size();	// number of rooms
 
 		// Schedule
+		// 7 - hours per day
+		// 5 - days per week
 		int scheduleArray[][][] = new int[n][7][5];
-		/*for(int i = 0; i < n; i++)
-			for(int j = 0; j < 7; j++)
-				Arrays.fill(scheduleArray[i][j], -1);*/
 
 		ListIterator<ClassObject> iterator = classes.listIterator();
 		ClassObject controlClass = null;
@@ -121,9 +205,11 @@ public class Generator {
 						if (scheduleArray[i][j][k] != 0)
 							continue;
 
-						// for efery room
+						// RESOLVE CONFLICTS
+						// for efery room at the same time:
 						for (int it = 0; it < classes.size() &&
 								(scheduleArray[it][j][k] != 0); it++) {
+							// get control class id form schedule
 							int controlClassId = scheduleArray[it][j][k];
 
 							// find control class
@@ -140,10 +226,9 @@ public class Generator {
 								continue roomLoop;
 						}
 
-						// assign class to scheduleArrayList and goto next class
+						// assign class to scheduleArrayList and go to next class
 						scheduleArray[i][j][k] = classItem.getId();
 						continue classLoop;
-
 					}
 				}
 			}
@@ -155,7 +240,8 @@ public class Generator {
 
 	/**
 	 * Generates scheduleArrayList
-	 * Resolves keys in scheduleArray, finds appropiate objects and
+	 * Resolves keys in scheduleArray, finds their objects and puts in
+	 * to Schedule Array List
 	 * @param scheduleArray is array of 3D dependency created in alghoritm.
 	 */
 	void generate(int scheduleArray[][][]) {

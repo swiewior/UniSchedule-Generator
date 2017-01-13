@@ -109,4 +109,15 @@ public class ClassObject {
 	}
 
 
+	public CourseObject getCourse() {
+		return course;
+	}
+
+	public GroupObject getGroup() {
+		return group;
+	}
+
+	public ProfessorObject getProfessor() {
+		return professor;
+	}
 }

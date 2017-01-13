@@ -3,7 +3,7 @@ public class GroupObject {
 	private String name;
 	private String year;
 	private String subject;
-	private String preferences[][];
+	private int preferences[][];
 
 	public String getName() {
 		return name;
@@ -44,11 +44,11 @@ public class GroupObject {
 		this.subject = subject;
 	}
 
-	public void setPreferences(String[][] preferences) {
+	public void setPreferences(int[][] preferences) {
 		this.preferences = preferences;
 	}
 
-	public String[][] getPreferences() {
+	public int[][] getPreferences() {
 		return preferences;
 	}
 }
