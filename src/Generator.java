@@ -85,10 +85,18 @@ public class Generator {
 	}
 
 	void readPreferences() {
+		// Read JSON files and write preferences to objects
 		new JSONReader(groups, professors, rooms);
 
+		// Assign preferences to schedule
+		assignProfessorPreferences();
+		assignGroupPreferences();
+
+		LOG.log(Level.INFO, "Zakończono wczytywanie preferencji");
+	}
+
+	void assignProfessorPreferences() {
 		ListIterator<ClassObject> iterator = classes.listIterator();
-		ClassObject controlClass = null;
 		int roomIndex;
 
 		classLoop:
@@ -103,73 +111,45 @@ public class Generator {
 						if (scheduleArray[roomIndex][i][j] != 0)
 							continue;
 
-						// RESOLVE CONFLICTS
-						// for efery room at the same time:
-						for (int it = 0; it < classes.size() &&
-								(scheduleArray[it][i][j] != 0); it++) {
-							// get control class id form schedule
-							int controlClassId = scheduleArray[it][i][j];
-
-							// find control class
-							for (ClassObject classObject : classes)
-								if(classObject.getId() == controlClassId) {
-									controlClass = classObject;
-									break;
-								}
-
-							// check if professor or group of control class is already assigned
-							assert controlClass != null;
-							if ((controlClass.getProfessorId() == classItem.getProfessorId())
-									|| (controlClass.getGroupId() == classItem.getGroupId()))
-								continue classLoop;
-						}
+						boolean conflict = checkConflicts(classItem, i, j);
+						if (conflict)
+							continue classLoop;
 
 						// assign class to scheduleArrayList and go to next class
 						scheduleArray[roomIndex][i][j] = classItem.getId();
+						// delete assigned preference from preferences table
+						professorPreferences[i][j] = -1;
 						continue classLoop;
 					}
-				}
+		}
+	}
 
-		iterator = classes.listIterator();
+	void assignGroupPreferences() {
+		ListIterator<ClassObject> iterator = classes.listIterator();
+		int roomIndex;
+
 		classLoop:
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			ClassObject classItem = iterator.next();
 
 			int[][] groupPreferences = classItem.getGroup().getPreferences();
 
-			for(int j = 0; j < 5; j++)
+			for (int j = 0; j < 5; j++)
 				for (int i = 0; i < 7; i++)
 					if ((roomIndex = groupPreferences[i][j]) != -1) {
 						if (scheduleArray[roomIndex][i][j] != 0)
 							continue;
 
-						// RESOLVE CONFLICTS
-						// for efery room at the same time:
-						for (int it = 0; it < classes.size() &&
-								(scheduleArray[it][i][j] != 0); it++) {
-							// get control class id form schedule
-							int controlClassId = scheduleArray[it][i][j];
-
-							// find control class
-							for (ClassObject classObject : classes)
-								if(classObject.getId() == controlClassId) {
-									controlClass = classObject;
-									break;
-								}
-
-							// check if professor or group of control class is already assigned
-							assert controlClass != null;
-							if ((controlClass.getProfessorId() == classItem.getProfessorId())
-									|| (controlClass.getGroupId() == classItem.getGroupId()))
-								continue classLoop;
-						}
+						boolean conflict = checkConflicts(classItem, i, j);
+						if (conflict)
+							continue classLoop;
 
 						// assign class to scheduleArrayList and go to next class
 						scheduleArray[roomIndex][i][j] = classItem.getId();
 						continue classLoop;
 					}
 		}
-			}
+	}
 
 	/**
 	 * Assigns classes to the 3D resources relay (room, hour and day)
@@ -186,7 +166,6 @@ public class Generator {
 		int scheduleArray[][][] = new int[n][7][5];
 
 		ListIterator<ClassObject> iterator = classes.listIterator();
-		ClassObject controlClass = null;
 
 		classLoop:
 		while(iterator.hasNext()) {
@@ -205,26 +184,9 @@ public class Generator {
 						if (scheduleArray[i][j][k] != 0)
 							continue;
 
-						// RESOLVE CONFLICTS
-						// for efery room at the same time:
-						for (int it = 0; it < classes.size() &&
-								(scheduleArray[it][j][k] != 0); it++) {
-							// get control class id form schedule
-							int controlClassId = scheduleArray[it][j][k];
-
-							// find control class
-							for (ClassObject classObject : classes)
-								if(classObject.getId() == controlClassId) {
-									controlClass = classObject;
-									break;
-								}
-
-								// check if professor or group of control class is already assigned
-							assert controlClass != null;
-							if ((controlClass.getProfessorId() == classItem.getProfessorId())
-									|| (controlClass.getGroupId() == classItem.getGroupId()))
-								continue roomLoop;
-						}
+						boolean conflict = checkConflicts(classItem, i, j);
+						if (conflict)
+							continue hourLoop;
 
 						// assign class to scheduleArrayList and go to next class
 						scheduleArray[i][j][k] = classItem.getId();
@@ -282,5 +244,37 @@ public class Generator {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Checks if Professor or Group has classes in other room at the same time
+	 * @param classItem is class object to check
+	 * @param hour is an hour when we check conflicts
+	 * @param day is a day when method checks for conflicts
+	 * @return returns true if conflict exists or false if not
+	 */
+	Boolean checkConflicts(ClassObject classItem, int hour, int day) {
+		ClassObject controlClass = null;
+
+		// for efery room at the same time:
+		for (int it = 0; it < classes.size() &&
+				(scheduleArray[it][hour][day] != 0); it++) {
+			// get control class id form schedule
+			int controlClassId = scheduleArray[it][hour][day];
+
+			// find control class
+			for (ClassObject classObject : classes)
+				if(classObject.getId() == controlClassId) {
+					controlClass = classObject;
+					break;
+				}
+
+			// check if professor or group of control class is already assigned
+			assert controlClass != null;
+			if ((controlClass.getProfessorId() == classItem.getProfessorId())
+					|| (controlClass.getGroupId() == classItem.getGroupId()))
+				return true;
+		}
+		return false;
 	}
 }
