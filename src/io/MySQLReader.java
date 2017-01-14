@@ -32,10 +32,10 @@ public class MySQLReader {
 		try {
 			connection = DriverManager.getConnection(url, "wwydryc1", "V8XwxsFN");
 		} catch (SQLException ex) {
-			LOG.log(Level.SEVERE, "Nie połączono z bazą danych", ex);
+			LOG.log(Level.SEVERE, "Couldn't connect with database", ex);
 			return;
 		}
-		LOG.log(Level.INFO, "Połączono z bazą danych");
+		LOG.log(Level.INFO, "Connected with database");
 	}
 
 	public void readGropus(ArrayList<GroupObject> list){
@@ -58,7 +58,7 @@ public class MySQLReader {
 					groupObject = new GroupObject(id, name, year, course);
 					list.add(groupObject);
 				}
-				LOG.log(Level.INFO, "Odczytano grupy");
+				LOG.log(Level.INFO, "Finished reading groups");
 			}
 		} catch (SQLException e) {
 			LOG.log(Level.WARNING, "", e);
@@ -79,7 +79,7 @@ public class MySQLReader {
 							)
 					);
 				}
-				LOG.log(Level.INFO, "Odczytano profesorów");
+				LOG.log(Level.INFO, "Finished reading professors");
 			}
 		} catch (SQLException e) {
 			LOG.log(Level.WARNING, "", e);
@@ -100,7 +100,7 @@ public class MySQLReader {
 					);
 				}
 			}
-			LOG.log(Level.INFO, "Odczytano pokoje");
+			LOG.log(Level.INFO, "Finished reading rooms");
 		} catch (SQLException e) {
 			LOG.log(Level.WARNING, "", e);
 		}
@@ -119,7 +119,7 @@ public class MySQLReader {
 						)
 					);
 				}
-				LOG.log(Level.INFO, "Odczytano przedmioty");
+				LOG.log(Level.INFO, "Finished reading subjects");
 			}
 		} catch (SQLException e) {
 			LOG.log(Level.SEVERE, "", e);
@@ -142,7 +142,7 @@ public class MySQLReader {
 							)
 					);
 				}
-				LOG.log(Level.INFO, "Pobrano zajęcia");
+				LOG.log(Level.INFO, "Loaded classes");
 			}
 		} catch (SQLException e) {
 			LOG.log(Level.WARNING, "", e);

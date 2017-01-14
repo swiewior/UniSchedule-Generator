@@ -7,15 +7,16 @@ import java.io.IOException;
 public class Main {
 	public static void main(final String[] argv)  {
 		// Zapis logów
+		GeneralLogger log = new GeneralLogger();
 		try {
-			GeneralLogger.setup();
+			log.setup();
 		} catch (SecurityException | IOException e) {
 			e.printStackTrace(System.out);
 		}
 
 		new Generator();
 
-		GeneralLogger.close();
+		log.close();
 	}
 }
 

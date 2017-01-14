@@ -5,6 +5,7 @@ import resourcesObjects.GroupObject;
 import resourcesObjects.ProfessorObject;
 import resourcesObjects.RoomObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Objects;
@@ -45,10 +46,16 @@ public class JSONReader {
 		getFileNames();
 
 		fileNamesIterator = fileNames.listIterator();
-		while (fileNamesIterator.hasNext())
-			try {
-				readJSON(fileNamesIterator.next());
-			} catch (JSONException e) { LOG.log(Level.WARNING, "", e); }
+		while (fileNamesIterator.hasNext()) {
+			String fileName = fileNamesIterator.next();
+			File file = new File(fileName);
+			if (file.exists() && !file.isDirectory())
+				try {
+					readJSON(fileName);
+				} catch (JSONException e) {
+					LOG.log(Level.WARNING, "", e);
+				}
+		}
 	}
 
 	private void getFileNames() {
@@ -57,13 +64,13 @@ public class JSONReader {
 		groupsIterator = groups.listIterator();
 		while (groupsIterator.hasNext()) {
 			Integer groupId = groupsIterator.next().getId();
-			fileNames.add("grupa" + groupId.toString());
+			fileNames.add("grupa" + groupId.toString() + ".json");
 		}
 
 		professorsIterator = professors.listIterator();
 		while (professorsIterator.hasNext()) {
 			Integer professorId = professorsIterator.next().getId();
-			fileNames.add("prowadzacy" + professorId.toString());
+			fileNames.add("prowadzacy" + professorId.toString() + ".json");
 		}
 	}
 

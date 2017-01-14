@@ -56,15 +56,15 @@ public class Generator {
 		groups = new ArrayList<>();
 		professors = new ArrayList<>();
 		rooms = new ArrayList<>();
-
 		classes = new ArrayList<>();
+
+		readResources();
 
 		n = rooms.size();
 		// 7 - hours per day
 		// 5 - days per week
 		scheduleArray = new int[n][7][5];
 
-		readResources();
 		readPreferences();
 		algorithm();
 
@@ -74,7 +74,7 @@ public class Generator {
 			LOG.log(Level.SEVERE, "", e);
 		}
 
-		LOG.log(Level.INFO, "Zakończono działanie algorytmu");
+		LOG.log(Level.INFO, "Alghoritm finished without errors");
 	}
 
 	void readResources() {
@@ -87,7 +87,7 @@ public class Generator {
 
 		for (ClassObject aClass : classes)
 			aClass.resolveClassObject(courses, groups, professors);
-		LOG.log(Level.INFO, "Zakończono wczytywanie zasobów");
+		LOG.log(Level.INFO, "Finished reading resources");
 	}
 
 	void readPreferences() {
@@ -98,7 +98,7 @@ public class Generator {
 		assignProfessorPreferences();
 		assignGroupPreferences();
 
-		LOG.log(Level.INFO, "Zakończono wczytywanie preferencji");
+		LOG.log(Level.INFO, "Finished reading preferences");
 	}
 
 	void assignProfessorPreferences() {
@@ -110,6 +110,9 @@ public class Generator {
 			ClassObject classItem = iterator.next();
 
 			int[][] professorPreferences = classItem.getProfessor().getPreferences();
+
+			if (professorPreferences == null)
+				continue;
 
 			for(int j = 0; j < 5; j++)
 				for (int i = 0; i < 7; i++)
@@ -140,6 +143,9 @@ public class Generator {
 
 			int[][] groupPreferences = classItem.getGroup().getPreferences();
 
+			if (groupPreferences == null)
+				continue;
+
 			for (int j = 0; j < 5; j++)
 				for (int i = 0; i < 7; i++)
 					if ((roomIndex = groupPreferences[i][j]) != -1) {
@@ -164,12 +170,12 @@ public class Generator {
 		// i - room number
 		// j - hour
 		// k - day
-		int n = rooms.size();	// number of rooms
+		//int n = rooms.size();	// number of rooms
 
 		// ScheduleObjectObject
 		// 7 - hours per day
 		// 5 - days per week
-		int scheduleArray[][][] = new int[n][7][5];
+		//scheduleArray[][][] = new int[n][7][5];
 
 		ListIterator<ClassObject> iterator = classes.listIterator();
 
@@ -190,7 +196,7 @@ public class Generator {
 						if (scheduleArray[i][j][k] != 0)
 							continue;
 
-						boolean conflict = checkConflicts(classItem, i, j);
+						boolean conflict = checkConflicts(classItem, j, k);
 						if (conflict)
 							continue hourLoop;
 
@@ -202,7 +208,7 @@ public class Generator {
 			}
 			//LOG.log(Level.WARNING, "Nie dodano zajęcia do planu", classItem);
 		}
-		LOG.log(Level.INFO, "Zakończono umieszczanie zajęć w planie");
+		LOG.log(Level.INFO, "Assigned classes to the schedule");
 		generate(scheduleArray);
 	}
 
@@ -263,7 +269,7 @@ public class Generator {
 		ClassObject controlClass = null;
 
 		// for efery room at the same time:
-		for (int it = 0; it < classes.size() &&
+		for (int it = 0; (it < n) &&
 				(scheduleArray[it][hour][day] != 0); it++) {
 			// get control class id form schedule
 			int controlClassId = scheduleArray[it][hour][day];
