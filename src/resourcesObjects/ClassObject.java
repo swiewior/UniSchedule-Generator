@@ -13,6 +13,7 @@ public class ClassObject {
 	private int courseId;
 	private int professorId;
 	private int groupId;
+	private boolean assigned;
 
 	CourseObject course;
 	GroupObject group;
@@ -28,6 +29,7 @@ public class ClassObject {
 		this.courseId = courseId;
 		this.professorId = professorId;
 		this.groupId = groupId;
+		this.assigned = false;
 	}
 
 	public void resolveClassObject(ArrayList<CourseObject> courses,
@@ -119,5 +121,13 @@ public class ClassObject {
 
 	public ProfessorObject getProfessor() {
 		return professor;
+	}
+
+	public boolean isAssigned() {
+		return assigned;
+	}
+
+	public void setAssigned(boolean assigned) {
+		this.assigned = assigned;
 	}
 }

@@ -53,4 +53,8 @@ public class GroupObject {
 	public int[][] getPreferences() {
 		return preferences;
 	}
+
+	public String getNameForJSON() {
+		return "Grupa:" + id + ":" + name;
+	}
 }

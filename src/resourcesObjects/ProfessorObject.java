@@ -36,4 +36,8 @@ public class ProfessorObject {
 	public String getFullName() {
 		return name + " " + surname;
 	}
+
+	public String getNameForJSON() {
+		return "Nauczyciel:" + id + ":" + name + " " + surname;
+	}
 }

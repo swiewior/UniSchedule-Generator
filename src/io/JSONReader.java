@@ -1,11 +1,15 @@
 package io;
 
-import org.json.*;
+import org.json.JSONException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import resourcesObjects.GroupObject;
 import resourcesObjects.ProfessorObject;
 import resourcesObjects.RoomObject;
-
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Objects;
@@ -52,45 +56,55 @@ public class JSONReader {
 			if (file.exists() && !file.isDirectory())
 				try {
 					readJSON(fileName);
-				} catch (JSONException e) {
+				} catch (Exception e) {
 					LOG.log(Level.WARNING, "", e);
 				}
+			else
+				LOG.log(Level.WARNING, fileName + " doesn't exist");
+
 		}
 	}
 
 	private void getFileNames() {
 		fileNames = new ArrayList<>();
 
-		groupsIterator = groups.listIterator();
-		while (groupsIterator.hasNext()) {
-			Integer groupId = groupsIterator.next().getId();
-			fileNames.add("grupa" + groupId.toString() + ".json");
-		}
-
 		professorsIterator = professors.listIterator();
 		while (professorsIterator.hasNext()) {
 			Integer professorId = professorsIterator.next().getId();
-			fileNames.add("prowadzacy" + professorId.toString() + ".json");
+			fileNames.add("Nauczyciel" + professorId.toString() + ".json");
+		}
+
+		groupsIterator = groups.listIterator();
+		while (groupsIterator.hasNext()) {
+			Integer groupId = groupsIterator.next().getId();
+			fileNames.add("Grupa" + groupId.toString() + ".json");
 		}
 	}
 
-	private void readJSON(String fileName) throws JSONException {
+	private void readJSON(String fileName)
+			throws JSONException, ParseException, IOException {
 		RoomObject roomItem;
 
-		JSONObject file = new JSONObject(fileName);
-		String name = file.getString("czyje preferencje");
+		JSONParser parser = new JSONParser();
+
+		Object obj = parser.parse(new FileReader(fileName));
+		JSONObject jsonObject = (JSONObject) obj;
+
+		String name = (String) jsonObject.get("czyje preferencje");
+
 		int preferences[][] = new int[7][5];
 
 		// Day Loop
 		for (int j = 0; j < 5; j++) {
-			JSONObject day = file.getJSONObject(JSON_DAYS[j]);
+
+			JSONObject day = (JSONObject) jsonObject.get(JSON_DAYS[j]);
 
 			// Hour Loop
 			for (int i = 0; i < 7; i++) {
 				preferences[i][j] = -1; // fill preferences with -1 by default
 
-				String room = day.getString("sala" + i + 1);
-				if (!Objects.equals(room, "null")) {
+				String room = (String)  day.get("sala" + String.valueOf(i + 1));
+				if (!Objects.equals(room, "Brak zajec")) {
 
 					// get ArrayList index of room and assign to preferences
 					roomsIterator = rooms.listIterator();
@@ -111,22 +125,24 @@ public class JSONReader {
 		GroupObject groupItem;
 		ProfessorObject professorItem;
 
-		// Find group and assign preferences
-		groupsIterator = groups.listIterator();
-		while (groupsIterator.hasNext()) {
-			groupItem = groupsIterator.next();
-			if (Objects.equals(groupItem.getName(), name)) {
-				groupItem.setPreferences(preferences);
-				break;
-			}
-		}
+
 
 		// Find professor and assign preferences
 		professorsIterator = professors.listIterator();
 		while (professorsIterator.hasNext()) {
 			professorItem = professorsIterator.next();
-			if (Objects.equals(professorItem.getFullName(), name)) {
+			if (Objects.equals(professorItem.getNameForJSON(), name)) {
 				professorItem.setPreferences(preferences);
+				break;
+			}
+		}
+
+		// Find group and assign preferences
+		groupsIterator = groups.listIterator();
+		while (groupsIterator.hasNext()) {
+			groupItem = groupsIterator.next();
+			if (Objects.equals(groupItem.getNameForJSON(), name)) {
+				groupItem.setPreferences(preferences);
 				break;
 			}
 		}

@@ -67,6 +67,7 @@ public class Generator {
 
 		readPreferences();
 		algorithm();
+		generate();
 
 		try {
 			csvParser = new CSVWriter(scheduleArrayList);
@@ -103,64 +104,86 @@ public class Generator {
 
 	void assignProfessorPreferences() {
 		ListIterator<ClassObject> iterator = classes.listIterator();
-		int roomIndex;
 
 		classLoop:
 		while(iterator.hasNext()) {
 			ClassObject classItem = iterator.next();
+
+			//check if this class is already assigned from preferences
+			if(classItem.isAssigned())
+				continue;
 
 			int[][] professorPreferences = classItem.getProfessor().getPreferences();
 
 			if (professorPreferences == null)
 				continue;
 
-			for(int j = 0; j < 5; j++)
-				for (int i = 0; i < 7; i++)
-					if ((roomIndex = professorPreferences[i][j]) != -1) {
-						if (scheduleArray[roomIndex][i][j] != 0)
-							continue;
+			if(assignPreference(professorPreferences, classItem))
+				LOG.log(Level.INFO,
+						"applied preference of professor: "
+								+ classItem.getProfessor().getFullName()
+								+ " to class id: " + classItem.getId());
+			else
+				LOG.log(Level.WARNING,
+						"Unable to assign preference of group: "
+								+ classItem.getGroup().getName()
+								+ " to class id: " + classItem.getId());
 
-						boolean conflict = checkConflicts(classItem, i, j);
-						if (conflict)
-							continue classLoop;
-
-						// assign class to scheduleArrayList and go to next class
-						scheduleArray[roomIndex][i][j] = classItem.getId();
-						// delete assigned preference from preferences table
-						professorPreferences[i][j] = -1;
-						continue classLoop;
-					}
 		}
 	}
 
 	void assignGroupPreferences() {
 		ListIterator<ClassObject> iterator = classes.listIterator();
-		int roomIndex;
 
 		classLoop:
 		while (iterator.hasNext()) {
 			ClassObject classItem = iterator.next();
+
+			//check if this class is already assigned from preferences
+			if(classItem.isAssigned())
+				continue;
 
 			int[][] groupPreferences = classItem.getGroup().getPreferences();
 
 			if (groupPreferences == null)
 				continue;
 
-			for (int j = 0; j < 5; j++)
-				for (int i = 0; i < 7; i++)
-					if ((roomIndex = groupPreferences[i][j]) != -1) {
-						if (scheduleArray[roomIndex][i][j] != 0)
-							continue;
-
-						boolean conflict = checkConflicts(classItem, i, j);
-						if (conflict)
-							continue classLoop;
-
-						// assign class to scheduleArrayList and go to next class
-						scheduleArray[roomIndex][i][j] = classItem.getId();
-						continue classLoop;
-					}
+			if(assignPreference(groupPreferences, classItem))
+				LOG.log(Level.INFO,
+						"applied preference of group: "
+								+ classItem.getGroup().getName()
+								+ " to class id: " + classItem.getId());
+			else
+				LOG.log(Level.WARNING,
+						"Unable to assign preference of group: "
+								+ classItem.getGroup().getName()
+								+ " to class id: " + classItem.getId());
 		}
+	}
+
+	boolean assignPreference(int[][] preferences,
+												 ClassObject classItem) {
+		int roomIndex;
+
+		for (int j = 0; j < 5; j++)
+			for (int i = 0; i < 7; i++)
+				if ((roomIndex = preferences[i][j]) != -1) {
+					if (scheduleArray[roomIndex][i][j] != 0)
+						continue;
+
+					boolean conflict = checkConflicts(classItem, i, j);
+					if (conflict)
+						return false;
+
+					// assign class to scheduleArrayList and go to next class
+					scheduleArray[roomIndex][i][j] = classItem.getId();
+					// set as assigned
+					classItem.setAssigned(true);
+					// delete assigned preference from preferences table
+					preferences[i][j] = -1;
+					return true;
+				}
+		return false;
 	}
 
 	/**
@@ -183,8 +206,9 @@ public class Generator {
 		while(iterator.hasNext()) {
 			ClassObject classItem = iterator.next();
 
-			if (!iterator.hasPrevious())
-				scheduleArray[0][0][0] = classItem.getId();
+			//check if this class is already assigned from preferences
+			if(classItem.isAssigned())
+				continue;
 
 			dayLoop:
 			for (int k = 0; k < 5; k++) {
@@ -202,23 +226,24 @@ public class Generator {
 
 						// assign class to scheduleArrayList and go to next class
 						scheduleArray[i][j][k] = classItem.getId();
+						//set as assigned
+						classItem.setAssigned(true);
 						continue classLoop;
 					}
 				}
 			}
-			//LOG.log(Level.WARNING, "Nie dodano zajęcia do planu", classItem);
+			LOG.log(Level.WARNING,
+					"Unable to assign class to the schedule", classItem);
 		}
 		LOG.log(Level.INFO, "Assigned classes to the schedule");
-		generate(scheduleArray);
 	}
 
 	/**
 	 * Generates scheduleArrayList
 	 * Resolves keys in scheduleArray, finds their objects and puts in
 	 * to ScheduleObjectObject Array List
-	 * @param scheduleArray is array of 3D dependency created in alghoritm.
 	 */
-	void generate(int scheduleArray[][][]) {
+	void generate() {
 		int idClass, roomNumber, hourNumber, dayNumber;
 		ListIterator<ClassObject> iterator;
 		ClassObject classItem = null;
@@ -229,7 +254,10 @@ public class Generator {
 			hourLoop:
 			for (int j = 0; j < 7; j++) {
 				roomLoop:
-				for (int i = 0; (i < rooms.size()) && (scheduleArray[i][j][k] != 0); i++) {
+				for (int i = 0; i < rooms.size(); i++) {
+					if(scheduleArray[i][j][k] == 0)
+						continue;
+
 					idClass = scheduleArray[i][j][k];
 					roomNumber = i;
 					hourNumber = j;
@@ -269,8 +297,10 @@ public class Generator {
 		ClassObject controlClass = null;
 
 		// for efery room at the same time:
-		for (int it = 0; (it < n) &&
-				(scheduleArray[it][hour][day] != 0); it++) {
+		for (int it = 0; it < n; it++) {
+			if(scheduleArray[it][hour][day] == 0)
+				continue;
+
 			// get control class id form schedule
 			int controlClassId = scheduleArray[it][hour][day];
 
