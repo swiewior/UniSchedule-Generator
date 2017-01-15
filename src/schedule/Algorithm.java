@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 public class Algorithm {
 	private static final Logger LOG = Logger.getLogger( Logger.GLOBAL_LOGGER_NAME );
 
-	ArrayList<ClassObject> classes;
+	private ArrayList<ClassObject> classes;
 
 	/**
 	 * ScheduleObjectObject (Array of class ID from Database)
@@ -18,12 +18,12 @@ public class Algorithm {
 	 * 2 - hour
 	 * 3 - day
 	 */
-	int scheduleArray[][][];
+	private int scheduleArray[][][];
 
 	/**
 	 * Number of rooms
 	 */
-	int n;
+	private int n;
 
 	public Algorithm(ArrayList<ClassObject> classes, int[][][] scheduleArray, int n) {
 		this.classes = classes;
@@ -39,22 +39,17 @@ public class Algorithm {
 	 * First, Professors' preferences
 	 * Next, Groups' preferences
 	 */
-	void handlePreferences() {
+	private void handlePreferences() {
 		assignProfessorPreferences();
 		assignGroupPreferences();
 
 		LOG.log(Level.INFO, "Finished assigning preferences");
 	}
 
-	void assignProfessorPreferences() {
-		ListIterator<ClassObject> iterator = classes.listIterator();
-
-		classLoop:
-		while(iterator.hasNext()) {
-			ClassObject classItem = iterator.next();
-
+	private void assignProfessorPreferences() {
+		for (ClassObject classItem : classes) {
 			//check if this class is already assigned from preferences
-			if(classItem.isAssigned())
+			if (classItem.isAssigned())
 				continue;
 
 			int[][] professorPreferences = classItem.getProfessor().getPreferences();
@@ -62,7 +57,7 @@ public class Algorithm {
 			if (professorPreferences == null)
 				continue;
 
-			if(assignPreference(professorPreferences, classItem))
+			if (assignPreference(professorPreferences, classItem))
 				LOG.log(Level.INFO,
 						"applied preference of professor: "
 								+ classItem.getProfessor().getFullName()
@@ -76,15 +71,10 @@ public class Algorithm {
 		}
 	}
 
-	void assignGroupPreferences() {
-		ListIterator<ClassObject> iterator = classes.listIterator();
-
-		classLoop:
-		while (iterator.hasNext()) {
-			ClassObject classItem = iterator.next();
-
+	private void assignGroupPreferences() {
+		for (ClassObject classItem : classes) {
 			//check if this class is already assigned from preferences
-			if(classItem.isAssigned())
+			if (classItem.isAssigned())
 				continue;
 
 			int[][] groupPreferences = classItem.getGroup().getPreferences();
@@ -92,7 +82,7 @@ public class Algorithm {
 			if (groupPreferences == null)
 				continue;
 
-			if(assignPreference(groupPreferences, classItem))
+			if (assignPreference(groupPreferences, classItem))
 				LOG.log(Level.INFO,
 						"applied preference of group: "
 								+ classItem.getGroup().getName()
@@ -105,26 +95,26 @@ public class Algorithm {
 		}
 	}
 
-	boolean assignPreference(int[][] preferences,
-													 ClassObject classItem) {
+	private boolean assignPreference(int[][] preferences,
+																	 ClassObject classItem) {
 		int roomIndex;
 
-		for (int j = 0; j < 5; j++)
-			for (int i = 0; i < 7; i++)
-				if ((roomIndex = preferences[i][j]) != -1) {
-					if (scheduleArray[roomIndex][i][j] != 0)
+		for (int dayIndex = 0; dayIndex < 5; dayIndex++)
+			for (int hourIndex = 0; hourIndex < 7; hourIndex++)
+				if ((roomIndex = preferences[hourIndex][dayIndex]) != -1) {
+					if (scheduleArray[roomIndex][hourIndex][dayIndex] != 0)
 						continue;
 
-					boolean conflict = checkConflicts(classItem, i, j);
+					boolean conflict = checkConflicts(classItem, hourIndex, dayIndex);
 					if (conflict)
 						return false;
 
 					// assign class to scheduleArrayList and go to next class
-					scheduleArray[roomIndex][i][j] = classItem.getId();
+					scheduleArray[roomIndex][hourIndex][dayIndex] = classItem.getId();
 					// set as assigned
 					classItem.setAssigned(true);
 					// delete assigned preference from preferences table
-					preferences[i][j] = -1;
+					preferences[hourIndex][dayIndex] = -1;
 					return true;
 				}
 		return false;
@@ -133,11 +123,7 @@ public class Algorithm {
 	/**
 	 * Assigns classes to the 3D resources relay (room, hour and day)
 	 */
-	void algorithm() {
-		// i - room number
-		// j - hour
-		// k - day
-
+	private void algorithm() {
 		ListIterator<ClassObject> iterator = classes.listIterator();
 
 		classLoop:
@@ -149,22 +135,22 @@ public class Algorithm {
 				continue;
 
 			dayLoop:
-			for (int k = 0; k < 5; k++) {
+			for (int dayIndex = 0; dayIndex < 5; dayIndex++) {
 				hourLoop:
-				for (int j = 0; j < 7; j++) {
+				for (int hourIndex = 0; hourIndex < 7; hourIndex++) {
 					roomLoop:
-					for (int i = 0; i < n; i++) {
+					for (int roomIndex = 0; roomIndex < n; roomIndex++) {
 
-						if (scheduleArray[i][j][k] != 0)
+						if (scheduleArray[roomIndex][hourIndex][dayIndex] != 0)
 							continue;
 
-						boolean conflict = checkConflicts(classItem, j, k);
+						boolean conflict = checkConflicts(classItem, hourIndex, dayIndex);
 						if (conflict)
 							continue hourLoop;
 
 						// assign class to scheduleArrayList and go to next class
-						scheduleArray[i][j][k] = classItem.getId();
-						//set as assigned
+						scheduleArray[roomIndex][hourIndex][dayIndex] = classItem.getId();
+						// set as assigned
 						classItem.setAssigned(true);
 						continue classLoop;
 					}
@@ -179,20 +165,20 @@ public class Algorithm {
 	/**
 	 * Checks if Professor or Group has classes in other room at the same time
 	 * @param classItem is class object to check
-	 * @param hour is an hour when we check conflicts
-	 * @param day is a day when method checks for conflicts
+	 * @param hourIndex is an hour when we check conflicts
+	 * @param dayIndex is a day when method checks for conflicts
 	 * @return returns true if conflict exists or false if not
 	 */
-	Boolean checkConflicts(ClassObject classItem, int hour, int day) {
+	private Boolean checkConflicts(ClassObject classItem, int hourIndex, int dayIndex) {
 		ClassObject controlClass = null;
 
 		// for efery room at the same time:
-		for (int it = 0; it < n; it++) {
-			if(scheduleArray[it][hour][day] == 0)
+		for (int roomIndex = 0; roomIndex < n; roomIndex++) {
+			if(scheduleArray[roomIndex][hourIndex][dayIndex] == 0)
 				continue;
 
 			// get control class id form schedule
-			int controlClassId = scheduleArray[it][hour][day];
+			int controlClassId = scheduleArray[roomIndex][hourIndex][dayIndex];
 
 			// find control class
 			for (ClassObject classObject : classes)

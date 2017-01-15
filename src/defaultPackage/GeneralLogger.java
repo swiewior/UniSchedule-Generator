@@ -8,7 +8,6 @@ import java.util.logging.SimpleFormatter;
 
 class GeneralLogger {
 	static private FileHandler fileTxt;
-	static private SimpleFormatter formatterTxt;
 
 	static void setup() throws IOException {
 
@@ -19,7 +18,7 @@ class GeneralLogger {
 		fileTxt = new FileHandler("Log.txt");
 
 		// create a TXT formatter
-		formatterTxt = new SimpleFormatter();
+		SimpleFormatter formatterTxt = new SimpleFormatter();
 		fileTxt.setFormatter(formatterTxt);
 		LOG.addHandler(fileTxt);
 	}

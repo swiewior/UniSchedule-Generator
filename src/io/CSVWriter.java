@@ -24,11 +24,11 @@ public class CSVWriter {
 		//sb.append("course,room,professor,day,start_hour,90,group_name");
 		//sb.append(System.lineSeparator());
 
-		readSchedule();
+		buildCSV();
 		writeToFile();
 	}
 
-	private void readSchedule(){
+	private void buildCSV(){
 
 		for (ScheduleObject scheduleItem : list) {
 			if (sb.length() != 0) {
@@ -45,7 +45,7 @@ public class CSVWriter {
 			sb.append(',');
 			sb.append(scheduleItem.getHour().getStart());
 			sb.append(',');
-			sb.append("90");
+			sb.append("90"); // duration
 			sb.append(',');
 			sb.append(scheduleItem.getClassObject().groupToString());
 		}

@@ -87,23 +87,22 @@ public class JSONReader {
 
 		int preferences[][] = new int[7][5];
 
-		// Day Loop
-		for (int j = 0; j < 5; j++) {
+		for (int dayIndex = 0; dayIndex < 5; dayIndex++) {
 
-			JSONObject day = (JSONObject) jsonObject.get(JSON_DAYS[j]);
+			JSONObject day = (JSONObject) jsonObject.get(JSON_DAYS[dayIndex]);
 
-			// Hour Loop
-			for (int i = 0; i < 7; i++) {
-				preferences[i][j] = -1; // fill preferences with -1 by default
+			for (int hourIndex = 0; hourIndex < 7; hourIndex++) {
+				// fill preferences with -1 by default
+				preferences[hourIndex][dayIndex] = -1;
 
-				String room = (String)  day.get("sala" + String.valueOf(i + 1));
+				String room = (String)  day.get("sala" + String.valueOf(hourIndex + 1));
 				if (!Objects.equals(room, "Brak zajec")) {
 
 					// get ArrayList index of room and assign to preferences
 					for (RoomObject room1 : rooms) {
 						roomItem = room1;
 						if (Objects.equals(roomItem.getName(), room)) {
-							preferences[i][j] = rooms.indexOf(roomItem);
+							preferences[hourIndex][dayIndex] = rooms.indexOf(roomItem);
 							break;
 						}
 					}
@@ -116,8 +115,6 @@ public class JSONReader {
 	private void assignPreferences(String name, int preferences[][]) {
 		GroupObject groupItem;
 		ProfessorObject professorItem;
-
-
 
 		// Find professor and assign preferences
 		professorsIterator = professors.listIterator();
@@ -139,5 +136,4 @@ public class JSONReader {
 			}
 		}
 	}
-
 }

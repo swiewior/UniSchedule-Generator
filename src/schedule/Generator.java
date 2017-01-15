@@ -101,19 +101,16 @@ public class Generator {
 		ClassObject classItem = null;
 		scheduleArrayList = new ArrayList<>();
 
-		dayLoop:
-		for (int k = 0; k < 5; k++) {
-			hourLoop:
-			for (int j = 0; j < 7; j++) {
-				roomLoop:
-				for (int i = 0; i < rooms.size(); i++) {
-					if(scheduleArray[i][j][k] == 0)
+		for (int dayIndex = 0; dayIndex < 5; dayIndex++) {
+			for (int hourIndex = 0; hourIndex < 7; hourIndex++) {
+				for (int roomIndex = 0; roomIndex < rooms.size(); roomIndex++) {
+					if(scheduleArray[roomIndex][hourIndex][dayIndex] == 0)
 						continue;
 
-					idClass = scheduleArray[i][j][k];
-					roomNumber = i;
-					hourNumber = j;
-					dayNumber = k;
+					idClass = scheduleArray[roomIndex][hourIndex][dayIndex];
+					roomNumber = roomIndex;
+					hourNumber = hourIndex;
+					dayNumber = dayIndex;
 
 					String day = DAYS[dayNumber];
 					Hour hour = HOURS[hourNumber];

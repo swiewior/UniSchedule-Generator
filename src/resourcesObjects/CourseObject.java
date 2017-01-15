@@ -9,7 +9,7 @@ public class CourseObject {
 		this.name = name;
 	}
 
-	public int getId() {
+	int getId() {
 		return id;
 	}
 
