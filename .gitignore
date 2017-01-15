@@ -1,6 +1,5 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### Java template
-*.class
 
 # BlueJ files
 *.ctxt
@@ -60,3 +59,4 @@ crashlytics-build.properties
 fabric.properties
 .svn/
 test/
+javadoc/
