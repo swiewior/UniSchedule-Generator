@@ -19,20 +19,15 @@ import java.util.logging.Logger;
 public class JSONReader {
 	private static final Logger LOG = Logger.getLogger( Logger.GLOBAL_LOGGER_NAME );
 
-	GroupObject groupItem;
-	ProfessorObject professorItem;
+	private ArrayList<GroupObject> groups;
+	private ArrayList<ProfessorObject> professors;
+	private ArrayList<RoomObject> rooms;
+	private ArrayList<String> fileNames;
 
-	ArrayList<GroupObject> groups;
-	ArrayList<ProfessorObject> professors;
-	ArrayList<RoomObject> rooms;
-	ArrayList<String> fileNames;
+	private ListIterator<GroupObject> groupsIterator;
+	private ListIterator<ProfessorObject> professorsIterator;
 
-	ListIterator<GroupObject> groupsIterator;
-	ListIterator<ProfessorObject> professorsIterator;
-	ListIterator<RoomObject> roomsIterator;
-	ListIterator<String> fileNamesIterator;
-
-	static final String[] JSON_DAYS = {
+	private static final String[] JSON_DAYS = {
 			"poniedzialek",
 			"wtorek",
 			"sroda",
@@ -49,9 +44,7 @@ public class JSONReader {
 
 		getFileNames();
 
-		fileNamesIterator = fileNames.listIterator();
-		while (fileNamesIterator.hasNext()) {
-			String fileName = fileNamesIterator.next();
+		for (String fileName : fileNames) {
 			File file = new File(fileName);
 			if (file.exists() && !file.isDirectory())
 				try {
@@ -107,9 +100,8 @@ public class JSONReader {
 				if (!Objects.equals(room, "Brak zajec")) {
 
 					// get ArrayList index of room and assign to preferences
-					roomsIterator = rooms.listIterator();
-					while (roomsIterator.hasNext()) {
-						roomItem = roomsIterator.next();
+					for (RoomObject room1 : rooms) {
+						roomItem = room1;
 						if (Objects.equals(roomItem.getName(), room)) {
 							preferences[i][j] = rooms.indexOf(roomItem);
 							break;

@@ -13,7 +13,7 @@ public class CourseObject {
 		return id;
 	}
 
-	public String getName() {
+	String getName() {
 		return name;
 	}
 }

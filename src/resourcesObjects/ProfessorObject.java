@@ -17,11 +17,11 @@ public class ProfessorObject {
 		return id;
 	}
 
-	public String getName() {
+	String getName() {
 		return name;
 	}
 
-	public String getSurname() {
+	String getSurname() {
 		return surname;
 	}
 

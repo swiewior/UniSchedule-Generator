@@ -8,20 +8,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MySQLReader {
-	Connection connection;
+	private Connection connection;
 	private static final Logger LOG = Logger.getLogger( Logger.GLOBAL_LOGGER_NAME );
-
-	public MySQLReader(Connection connection) {
-		this.connection = connection;
-		init();
-	}
 
 	public MySQLReader() {
 		init();
 	}
 
+	/**
+	 * Initialize connection
+	 */
 	private void init(){
-		//Inicjalizacja Bazy Danych
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch (Exception ex) {
@@ -52,10 +49,8 @@ public class MySQLReader {
 				{
 					Integer id = rs.getInt("ID");
 					String name = rs.getString("nazwa");
-					String year = rs.getString("rok_rozp");
-					String course = rs.getString("kierunek");
 
-					groupObject = new GroupObject(id, name, year, course);
+					groupObject = new GroupObject(id, name);
 					list.add(groupObject);
 				}
 				LOG.log(Level.INFO, "Finished reading groups");
@@ -94,7 +89,6 @@ public class MySQLReader {
 				while (rs.next()) {
 					list.add(
 							new RoomObject(
-									rs.getInt("ID"),
 									rs.getString("sala")
 							)
 					);
@@ -135,7 +129,6 @@ public class MySQLReader {
 					list.add(
 							new ClassObject(
 									rs.getInt("ID"),
-									rs.getInt("lgodzin"),
 									rs.getInt("przedmiot"),
 									rs.getInt("prowadzacy"),
 									rs.getInt("grupa")

@@ -1,19 +1,14 @@
 package defaultPackage;
 
 public class Hour {
-	String start;
-	String end;
+	private String start;
 
-	public Hour(String start, String end) {
+	public Hour(String start) {
 		this.start = start;
-		this.end = end;
 	}
 
 	public String getStart() {
 		return start;
 	}
 
-	public String getEnd() {
-		return end;
-	}
 }

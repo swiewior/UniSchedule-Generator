@@ -9,23 +9,17 @@ public class ClassObject {
 	private static final Logger LOG = Logger.getLogger( Logger.GLOBAL_LOGGER_NAME );
 
 	private int id;
-	private int durationId;
 	private int courseId;
 	private int professorId;
 	private int groupId;
 	private boolean assigned;
 
-	CourseObject course;
-	GroupObject group;
-	ProfessorObject professor;
+	private CourseObject course;
+	private GroupObject group;
+	private ProfessorObject professor;
 
-	ListIterator<CourseObject> courseIterator;
-	ListIterator<GroupObject> groupIterator;
-	ListIterator<ProfessorObject> professorIterator;
-
-	public ClassObject(int id, int durationId, int courseId, int professorId, int groupId) {
+	public ClassObject(int id, int courseId, int professorId, int groupId) {
 		this.id = id;
-		this.durationId = durationId;
 		this.courseId = courseId;
 		this.professorId = professorId;
 		this.groupId = groupId;
@@ -36,9 +30,9 @@ public class ClassObject {
 													ArrayList<GroupObject> groups,
 													ArrayList<ProfessorObject> professors) {
 
-		courseIterator = courses.listIterator();
-		groupIterator = groups.listIterator();
-		professorIterator = professors.listIterator();
+		ListIterator<CourseObject> courseIterator = courses.listIterator();
+		ListIterator<GroupObject> groupIterator = groups.listIterator();
+		ListIterator<ProfessorObject> professorIterator = professors.listIterator();
 
 		while(courseIterator.hasNext()) {
 			this.course = courseIterator.next();
@@ -62,40 +56,12 @@ public class ClassObject {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public int getDurationId() {
-		return durationId;
-	}
-
-	public void setDurationId(int durationId) {
-		this.durationId = durationId;
-	}
-
-	public int getCourseId() {
-		return courseId;
-	}
-
-	public void setCourseId(int courseId) {
-		this.courseId = courseId;
-	}
-
 	public int getProfessorId() {
 		return professorId;
 	}
 
-	public void setProfessorId(int professorId) {
-		this.professorId = professorId;
-	}
-
 	public int getGroupId() {
 		return groupId;
-	}
-
-	public void setGroupId(int groupId) {
-		this.groupId = groupId;
 	}
 
 	public String professorToString(){
@@ -108,11 +74,6 @@ public class ClassObject {
 
 	public String courseToString(){
 		return course.getName();
-	}
-
-
-	public CourseObject getCourse() {
-		return course;
 	}
 
 	public GroupObject getGroup() {

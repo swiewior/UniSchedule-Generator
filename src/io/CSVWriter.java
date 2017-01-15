@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import schedule.ScheduleObject;
 
 public class CSVWriter {
-	PrintWriter pw;
-	StringBuilder sb;
-	ArrayList<ScheduleObject> list;
+	private PrintWriter pw;
+	private StringBuilder sb;
+	private ArrayList<ScheduleObject> list;
 
 	public CSVWriter(ArrayList<ScheduleObject> list) throws FileNotFoundException,
 			NullPointerException {
@@ -28,7 +28,7 @@ public class CSVWriter {
 		writeToFile();
 	}
 
-	void readSchedule(){
+	private void readSchedule(){
 
 		for (ScheduleObject scheduleItem : list) {
 			if (sb.length() != 0) {
@@ -51,7 +51,7 @@ public class CSVWriter {
 		}
 	}
 
-	void writeToFile(){
+	private void writeToFile(){
 		pw.write(sb.toString());
 		pw.close();
 	}

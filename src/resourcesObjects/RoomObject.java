@@ -1,12 +1,9 @@
 package resourcesObjects;
 
 public class RoomObject {
-	private int id;
 	private String name;
-	private String building;
 
-	public RoomObject(int id, String name) {
-		this.id = id;
+	public RoomObject(String name) {
 		this.name = name;
 	}
 

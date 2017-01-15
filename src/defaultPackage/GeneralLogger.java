@@ -6,11 +6,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-public class GeneralLogger {
+class GeneralLogger {
 	static private FileHandler fileTxt;
 	static private SimpleFormatter formatterTxt;
 
-	static public void setup() throws IOException {
+	static void setup() throws IOException {
 
 		// get the global logger to configure it
 		Logger LOG = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -24,6 +24,6 @@ public class GeneralLogger {
 		LOG.addHandler(fileTxt);
 	}
 
-	static public void close() throws SecurityException {
+	static void close() throws SecurityException {
 		fileTxt.close();
 	}}

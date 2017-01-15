@@ -5,13 +5,13 @@ import resourcesObjects.ClassObject;
 import resourcesObjects.RoomObject;
 
 public class ScheduleObject {
-	ClassObject classObject;
-	String room;
-	Hour hour;
-	String day;
+	private ClassObject classObject;
+	private String room;
+	private Hour hour;
+	private String day;
 
-	public ScheduleObject(ClassObject classObject, RoomObject room, Hour hour,
-												String day) {
+	ScheduleObject(ClassObject classObject, RoomObject room, Hour hour,
+								 String day) {
 		this.classObject = classObject;
 		this.room = room.getName();
 		this.hour = hour;
