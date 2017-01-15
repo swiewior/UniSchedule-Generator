@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="planzajec_gr3:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/planzajec_gr3_jar</output-path>
+    <root id="archive" name="planzajec_gr3.jar">
+      <element id="module-output" name="planzajec_gr3" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/json-simple.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/mysql-connector-java-5.1.39-bin.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
