@@ -4,7 +4,11 @@ import defaultpackage.Hour;
 import io.CSVWriter;
 import io.JSONReader;
 import io.MySQLReader;
-import resourcesobjects.*;
+import resourcesobjects.ClassObject;
+import resourcesobjects.GroupObject;
+import resourcesobjects.CourseObject;
+import resourcesobjects.ProfessorObject;
+import resourcesobjects.RoomObject;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -112,8 +116,9 @@ public class Generator {
     for (int dayIndex = 0; dayIndex < 5; dayIndex++) {
       for (int hourIndex = 0; hourIndex < 7; hourIndex++) {
         for (int roomIndex = 0; roomIndex < rooms.size(); roomIndex++) {
-          if (scheduleArray[roomIndex][hourIndex][dayIndex] == 0)
+          if (scheduleArray[roomIndex][hourIndex][dayIndex] == 0) {
             continue;
+          }
 
           idClass = scheduleArray[roomIndex][hourIndex][dayIndex];
           roomNumber = roomIndex;
@@ -128,8 +133,9 @@ public class Generator {
 
           while (iterator.hasNext()) {
             classItem = iterator.next();
-            if (classItem.getId() == idClass)
+            if (classItem.getId() == idClass) {
               break;
+            }
           }
 
           try {

@@ -24,15 +24,12 @@ public class Algorithm {
    */
   private int scheduleArray[][][];
 
-  /**
-   * Number of rooms
-   */
-  private int n;
+  private int numberOfRooms;
 
-  public Algorithm(ArrayList<ClassObject> classes, int[][][] scheduleArray, int n) {
+  public Algorithm(ArrayList<ClassObject> classes, int[][][] scheduleArray, int numberOfRooms) {
     this.classes = classes;
     this.scheduleArray = scheduleArray;
-    this.n = n;
+    this.numberOfRooms = numberOfRooms;
 
     handlePreferences();
     algorithm();
@@ -53,48 +50,54 @@ public class Algorithm {
   private void assignProfessorPreferences() {
     for (ClassObject classItem : classes) {
       //check if this class is already assigned from preferences
-      if (classItem.isAssigned())
+      if (classItem.isAssigned()) {
         continue;
+      }
 
       int[][] professorPreferences = classItem.getProfessor().getPreferences();
 
-      if (professorPreferences == null)
+      if (professorPreferences == null) {
         continue;
+      }
 
-      if (assignPreference(professorPreferences, classItem))
+      if (assignPreference(professorPreferences, classItem)) {
         LOG.log(Level.INFO,
             "applied preference of professor: "
                 + classItem.getProfessor().getFullName()
                 + " to class id: " + classItem.getId());
-      else
+      } else {
         LOG.log(Level.WARNING,
             "Unable to assign preference of group: "
                 + classItem.getGroup().getName()
                 + " to class id: " + classItem.getId());
+      }
     }
   }
 
   private void assignGroupPreferences() {
     for (ClassObject classItem : classes) {
       //check if this class is already assigned from preferences
-      if (classItem.isAssigned())
+      if (classItem.isAssigned()) {
         continue;
+      }
 
       int[][] groupPreferences = classItem.getGroup().getPreferences();
 
-      if (groupPreferences == null)
+      if (groupPreferences == null) {
         continue;
+      }
 
-      if (assignPreference(groupPreferences, classItem))
+      if (assignPreference(groupPreferences, classItem)) {
         LOG.log(Level.INFO,
             "applied preference of group: "
                 + classItem.getGroup().getName()
                 + " to class id: " + classItem.getId());
-      else
+      } else {
         LOG.log(Level.WARNING,
             "Unable to assign preference of group: "
                 + classItem.getGroup().getName()
                 + " to class id: " + classItem.getId());
+      }
     }
   }
 
@@ -102,15 +105,17 @@ public class Algorithm {
                                    ClassObject classItem) {
     int roomIndex;
 
-    for (int dayIndex = 0; dayIndex < 5; dayIndex++)
-      for (int hourIndex = 0; hourIndex < 7; hourIndex++)
+    for (int dayIndex = 0; dayIndex < 5; dayIndex++) {
+      for (int hourIndex = 0; hourIndex < 7; hourIndex++) {
         if ((roomIndex = preferences[hourIndex][dayIndex]) != -1) {
-          if (scheduleArray[roomIndex][hourIndex][dayIndex] != 0)
+          if (scheduleArray[roomIndex][hourIndex][dayIndex] != 0) {
             continue;
+          }
 
           boolean conflict = checkConflicts(classItem, hourIndex, dayIndex);
-          if (conflict)
+          if (conflict) {
             return false;
+          }
 
           // assign class to scheduleArrayList and go to next class
           scheduleArray[roomIndex][hourIndex][dayIndex] = classItem.getId();
@@ -120,7 +125,8 @@ public class Algorithm {
           preferences[hourIndex][dayIndex] = -1;
           return true;
         }
-
+      }
+    }
     return false;
   }
 
@@ -135,22 +141,25 @@ public class Algorithm {
       ClassObject classItem = iterator.next();
 
       //check if this class is already assigned from preferences
-      if(classItem.isAssigned())
+      if(classItem.isAssigned()) {
         continue;
+      }
 
       dayLoop:
       for (int dayIndex = 0; dayIndex < 5; dayIndex++) {
         hourLoop:
         for (int hourIndex = 0; hourIndex < 7; hourIndex++) {
           roomLoop:
-          for (int roomIndex = 0; roomIndex < n; roomIndex++) {
+          for (int roomIndex = 0; roomIndex < numberOfRooms; roomIndex++) {
 
-            if (scheduleArray[roomIndex][hourIndex][dayIndex] != 0)
+            if (scheduleArray[roomIndex][hourIndex][dayIndex] != 0) {
               continue;
+            }
 
             boolean conflict = checkConflicts(classItem, hourIndex, dayIndex);
-            if (conflict)
+            if (conflict) {
               continue hourLoop;
+            }
 
             // assign class to scheduleArrayList and go to next class
             scheduleArray[roomIndex][hourIndex][dayIndex] = classItem.getId();
@@ -178,25 +187,28 @@ public class Algorithm {
     ClassObject controlClass = null;
 
     // for efery room at the same time:
-    for (int roomIndex = 0; roomIndex < n; roomIndex++) {
-      if (scheduleArray[roomIndex][hourIndex][dayIndex] == 0)
+    for (int roomIndex = 0; roomIndex < numberOfRooms; roomIndex++) {
+      if (scheduleArray[roomIndex][hourIndex][dayIndex] == 0) {
         continue;
+      }
 
       // get control class id form schedule
       int controlClassId = scheduleArray[roomIndex][hourIndex][dayIndex];
 
       // find control class
-      for (ClassObject classObject : classes)
+      for (ClassObject classObject : classes) {
         if (classObject.getId() == controlClassId) {
           controlClass = classObject;
           break;
         }
+      }
 
       // check if professor or group of control class is already assigned
       assert controlClass != null;
       if ( (controlClass.getProfessorId() == classItem.getProfessorId() )
-          || (controlClass.getGroupId() == classItem.getGroupId() ) )
+          || (controlClass.getGroupId() == classItem.getGroupId() ) ) {
         return true;
+      }
     }
     return false;
   }

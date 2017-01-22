@@ -16,8 +16,9 @@ public class CSVWriter {
 
   public CSVWriter(ArrayList<ScheduleObject> list) throws FileNotFoundException,
       NullPointerException {
-    if (list == null)
+    if (list == null) {
       throw new NullPointerException("list is empty");
+    }
 
     this.list = list;
     pw = new PrintWriter(new File("plan.txt"));
@@ -32,7 +33,6 @@ public class CSVWriter {
   }
 
   private void buildCSV(){
-
     for (ScheduleObject scheduleItem : list) {
       if (sb.length() != 0) {
         sb.append(",");
@@ -58,5 +58,4 @@ public class CSVWriter {
     pw.write(sb.toString());
     pw.close();
   }
-
 }

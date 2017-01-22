@@ -1,8 +1,16 @@
 package io;
 
-import resourcesobjects.*;
+import resourcesobjects.CourseObject;
+import resourcesobjects.GroupObject;
+import resourcesobjects.ProfessorObject;
+import resourcesobjects.RoomObject;
+import resourcesobjects.ClassObject;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;

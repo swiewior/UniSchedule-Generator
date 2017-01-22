@@ -22,14 +22,6 @@ import java.util.logging.Logger;
 public class JSONReader {
   private static final Logger LOG = Logger.getLogger( Logger.GLOBAL_LOGGER_NAME );
 
-  private ArrayList<GroupObject> groups;
-  private ArrayList<ProfessorObject> professors;
-  private ArrayList<RoomObject> rooms;
-  private ArrayList<String> fileNames;
-
-  private ListIterator<GroupObject> groupsIterator;
-  private ListIterator<ProfessorObject> professorsIterator;
-
   private static final String[] JSON_DAYS = {
       "poniedzialek",
       "wtorek",
@@ -37,6 +29,14 @@ public class JSONReader {
       "czwartek",
       "piatek"
   };
+
+  private ArrayList<GroupObject> groups;
+  private ArrayList<ProfessorObject> professors;
+  private ArrayList<RoomObject> rooms;
+  private ArrayList<String> fileNames;
+
+  private ListIterator<GroupObject> groupsIterator;
+  private ListIterator<ProfessorObject> professorsIterator;
 
   public JSONReader(ArrayList<GroupObject> groups,
                     ArrayList<ProfessorObject> professors,
@@ -49,15 +49,15 @@ public class JSONReader {
 
     for (String fileName : fileNames) {
       File file = new File(fileName);
-      if (file.exists() && !file.isDirectory())
+      if (file.exists() && !file.isDirectory()) {
         try {
           readJSON(fileName);
         } catch (Exception e) {
           LOG.log(Level.WARNING, "", e);
         }
-      else
+      } else {
         LOG.log(Level.WARNING, fileName + " doesn't exist");
-
+      }
     }
   }
 
