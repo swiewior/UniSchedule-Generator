@@ -43,6 +43,3 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-# Package Files #
-*.jar
-!/build/planzajec_gr3.jar
