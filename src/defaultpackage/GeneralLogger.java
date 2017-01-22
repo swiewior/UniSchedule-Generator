@@ -15,7 +15,7 @@ class GeneralLogger {
     // get the global logger to configure it
     Logger LOG = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    LOG.setLevel(Level.WARNING); // Level of logs to write (default: WARNING)
+    LOG.setLevel(Level.INFO); // Level of logs to write (default: WARNING)
     fileTxt = new FileHandler("Log.txt");
 
     // create a TXT formatter
