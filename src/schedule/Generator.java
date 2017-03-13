@@ -69,14 +69,13 @@ public class Generator {
     // Read JSON files and write preferences to objects
     new JSONReader(groups, professors, rooms);
 
-    //Number of rooms
-    int n = rooms.size();
+    int numberOfRooms = rooms.size();
 
     // 7 - hours per day
     // 5 - days per week
-    scheduleArray = new int[n][7][5];
+    scheduleArray = new int[numberOfRooms][7][5];
 
-    new Algorithm(classes, scheduleArray, n);
+    new Algorithm(classes, scheduleArray, numberOfRooms);
 
     generate();
 
@@ -97,8 +96,9 @@ public class Generator {
     mySQLParser.readRooms(rooms);
     mySQLParser.readClasses(classes);
 
-    for (ClassObject aClass : classes)
+    for (ClassObject aClass : classes) {
       aClass.resolveClassObject(courses, groups, professors);
+    }
     LOG.log(Level.INFO, "Finished reading resources");
   }
 

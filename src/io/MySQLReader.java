@@ -37,9 +37,9 @@ public class MySQLReader {
       LOG.log(Level.SEVERE, "", ex);
       return;
     }
-    String url = "jdbc:mysql://mysql.agh.edu.pl:3306/wwydryc1";
+    String url = "jdbc:mysql://localhost:3306/io";
     try {
-      connection = DriverManager.getConnection(url, "wwydryc1", "V8XwxsFN");
+      connection = DriverManager.getConnection(url, "root", "");
     } catch (SQLException ex) {
       LOG.log(Level.SEVERE, "Couldn't connect with database", ex);
       return;
@@ -50,7 +50,7 @@ public class MySQLReader {
   public void readGropus(ArrayList<GroupObject> list){
     GroupObject groupObject;
 
-    try {
+    try { //TODO remove
       final String query = "SELECT A.*, B.nazwa_kierunku"
           + " FROM grupy A"
           + " INNER JOIN kierunek B"
