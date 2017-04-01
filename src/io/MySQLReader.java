@@ -50,7 +50,7 @@ public class MySQLReader {
   public void readGropus(ArrayList<GroupObject> list){
     GroupObject groupObject;
 
-    try { //TODO remove
+
       final String query = "SELECT A.*, B.nazwa_kierunku"
           + " FROM grupy A"
           + " INNER JOIN kierunek B"
@@ -65,9 +65,8 @@ public class MySQLReader {
           list.add(groupObject);
         }
         LOG.log(Level.INFO, "Finished reading groups");
-      }
-    } catch (SQLException e) {
-      LOG.log(Level.WARNING, "", e);
+      } catch (SQLException e) {
+        LOG.log(Level.WARNING, "", e);
     }
   }
 

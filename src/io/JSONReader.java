@@ -61,7 +61,7 @@ public class JSONReader {
     }
   }
 
-  private void getFileNames() {
+  public void getFileNames() {
     fileNames = new ArrayList<>();
 
     professorsIterator = professors.listIterator();
@@ -77,7 +77,7 @@ public class JSONReader {
     }
   }
 
-  private void readJSON(String fileName)
+  public void readJSON(String fileName)
       throws JSONException, ParseException, IOException {
     RoomObject roomItem;
 
@@ -139,4 +139,18 @@ public class JSONReader {
       }
     }
   }
+
+  public void setGroups(ArrayList<GroupObject> groups) {
+    this.groups = groups;
+  }
+
+  public void setProfessors(ArrayList<ProfessorObject> professors) {
+    this.professors = professors;
+  }
+
+  public void setRooms(ArrayList<RoomObject> rooms) {
+    this.rooms = rooms;
+  }
+
+  public JSONReader () {}
 }
